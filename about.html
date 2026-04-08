@@ -4,90 +4,33 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>NextGreen - About Us</title>
+  <link rel="stylesheet" href="style.css" />
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-   body {
-      font-family: Arial, sans-serif;
-      background-color: #f4f4f4;
-      color: #333;
-   }
-nav {
-      background-color: #1a4a1a;
-      padding: 15px 30px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      border-bottom: 3px solid #c8a020;
-    }
 
-    nav img {
-      height: 50px;
-    }
-
-    nav ul {
-      list-style: none;
-      display: flex;
-      gap: 20px;
-    }
-
-    nav ul li a {
-      color: white;
-      text-decoration: none;
-      font-size: 15px;
-    }
-
-    nav ul li a:hover {
-      color: #c8a020;
-    }
-
-    nav ul li a.active {
-      color: #c8a020;
-      font-weight: bold;
- .hero {
-      background-color: #1a4a1a;
+    .hero {
+      background-color: var(--green-dark);
       color: white;
       text-align: center;
-      padding: 80px 20px;
+      padding: 60px 20px;
+      border-bottom: 3px solid var(--yellow);
     }
 
     .hero img {
-      height: 100px;
-      margin-bottom: 20px;
+      height: 90px;
+      margin: 0 auto 20px auto;
     }
 
     .hero h1 {
-      font-size: 40px;
       margin-bottom: 10px;
     }
 
     .hero h1 span {
-      color: #c8a020;
+      color: var(--yellow);
     }
 
     .hero p {
-      font-size: 16px;
       color: #ccc;
       max-width: 600px;
       margin: 0 auto 20px auto;
-      line-height: 1.6;
     }
 
-    .sdg-badges {
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    .badge {
-      background-color: rgba(200, 160, 32, 0.2);
-      border: 1px solid #c8a020;
-      color: #c8a020;
-      padding: 6px 16px;
-      border-radius: 20px;
-      font-size: 13px;
-    }
