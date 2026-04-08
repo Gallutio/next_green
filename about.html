@@ -4,77 +4,35 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>NextGreen - About Us</title>
+  <link rel="stylesheet" href="style.css" />
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-   body {
-      font-family: Arial, sans-serif;
-      background-color: #f4f4f4;
-      color: #333;
-   }
-nav {
-      background-color: #1a4a1a;
-      padding: 15px 30px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      border-bottom: 3px solid #c8a020;
-    }
 
-    nav img {
-      height: 50px;
-    }
-
-    nav ul {
-      list-style: none;
-      display: flex;
-      gap: 20px;
-    }
-
-    nav ul li a {
-      color: white;
-      text-decoration: none;
-      font-size: 15px;
-    }
-
-    nav ul li a:hover {
-      color: #c8a020;
-    }
-
-    nav ul li a.active {
-      color: #c8a020;
-      font-weight: bold;
- .hero {
-      background-color: #1a4a1a;
+    .hero {
+      background-color: var(--green-dark);
       color: white;
       text-align: center;
-      padding: 80px 20px;
+      padding: 60px 20px;
+      border-bottom: 3px solid var(--yellow);
     }
 
     .hero img {
-      height: 100px;
-      margin-bottom: 20px;
+      height: 90px;
+      margin: 0 auto 20px auto;
     }
 
     .hero h1 {
-      font-size: 40px;
       margin-bottom: 10px;
     }
 
     .hero h1 span {
-      color: #c8a020;
+      color: var(--yellow);
     }
 
     .hero p {
-      font-size: 16px;
       color: #ccc;
       max-width: 600px;
       margin: 0 auto 20px auto;
-      line-height: 1.6;
-    }
+     }
 
     .sdg-badges {
       display: flex;
@@ -84,10 +42,127 @@ nav {
     }
 
     .badge {
-      background-color: rgba(200, 160, 32, 0.2);
-      border: 1px solid #c8a020;
-      color: #c8a020;
-      padding: 6px 16px;
+      border: 1px solid var(--yellow);
+      color: var(--yellow);
+      padding: 5px 14px;
       border-radius: 20px;
       font-size: 13px;
+    }
+
+    .section-title {
+      font-size: 1.5rem;
+      color: var(--green-dark);
+      margin-bottom: 15px;
+      border-left: 4px solid var(--yellow);
+      padding-left: 12px;
+    }
+
+    .cards {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      margin-top: 20px;
+    }
+
+    .card {
+      background-color: #f9f9f9;
+      border: 1px solid #ddd;
+      border-top: 4px solid var(--yellow);
+      border-radius: 8px;
+      padding: 20px;
+      flex: 1 1 200px;
+    }
+
+    .card .icon {
+      font-size: 28px;
+      margin-bottom: 10px;
+    }
+
+    .card h3 {
+      color: var(--green-dark);
+      margin-bottom: 8px;
+    }
+
+    .card p {
+      font-size: 14px;
+      color: #666;
+      margin: 0;
+    }
+
+    .sdg-section {
+      background-color: var(--green-dark);
+      color: white;
+      padding: 60px 0;
+      text-align: center;
+    }
+
+    .sdg-section h2 {
+      color: var(--yellow);
+      margin-bottom: 10px;
+    }
+
+    .sdg-section .intro {
+      color: #ccc;
+      margin-bottom: 30px;
+    }
+
+    .sdg-cards {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: center;
+    }
+
+    .sdg-card {
+      background-color: rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--yellow-dark);
+      border-radius: 10px;
+      padding: 25px 20px;
+      flex: 1 1 220px;
+      text-align: left;
+    }
+
+    .sdg-card .sdg-num {
+      font-size: 36px;
+      font-weight: bold;
+      color: var(--yellow);
+      margin-bottom: 5px;
+    }
+
+    .sdg-card h3 {
+      color: white;
+      margin-bottom: 8px;
+    }
+
+    .sdg-card p {
+      font-size: 13px;
+      color: #bbb;
+      margin: 0;
+    }
+
+    .team-section {
+      background-color: #f9f9f9;
+      padding: 60px 0;
+    }
+
+    .team-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      justify-content: center;
+      margin-top: 30px;
+    }
+
+    .team-member {
+      background-color: white;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      padding: 25px 20px;
+      width: 160px;
+      text-align: center;
+    }
+
+    .team-member .avatar {
+      font-size: 34px;
+      margin-bottom: 10px;
     }
