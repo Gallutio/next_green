@@ -272,3 +272,42 @@ input:focus, textarea:focus, select:focus {
     opacity: 0.5;
     cursor: not-allowed;
 }
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+
+.navbar {
+    display: flex;
+    width: 100%;
+    background-color: #f5f5f5;
+    border-bottom: 2px solid #ccc;
+}
+
+.nav-btn {
+    flex: 1;
+    padding: 18px 0;
+    text-align: center;
+    text-decoration: none;
+    color: black;
+    background-color: white;
+    border-right: 2px solid #ccc;
+    font-weight: bold;
+}
+
+.nav-btn:last-child {
+    border-right: none;
+}
+
+.nav-btn:hover {
+    background-color: #e6e6e6;
+}
+
+.active {
+    color: #e91e63;
+    background-color: #ffe3ef;
+}
