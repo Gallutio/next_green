@@ -6,7 +6,6 @@
   <title>NextGreen - About Us</title>
   <link rel="stylesheet" href="style.css" />
   <style>
-
     .hero {
       background-color: var(--green-dark);
       color: white;
@@ -20,10 +19,6 @@
       margin: 0 auto 20px auto;
     }
 
-    .hero h1 {
-      margin-bottom: 10px;
-    }
-
     .hero h1 span {
       color: var(--yellow);
     }
@@ -32,13 +27,12 @@
       color: #ccc;
       max-width: 600px;
       margin: 0 auto 20px auto;
-     }
+      }
 
     .sdg-badges {
       display: flex;
       justify-content: center;
       gap: 10px;
-      flex-wrap: wrap;
     }
 
     .badge {
@@ -50,7 +44,6 @@
     }
 
     .section-title {
-      font-size: 1.5rem;
       color: var(--green-dark);
       margin-bottom: 15px;
       border-left: 4px solid var(--yellow);
@@ -138,7 +131,7 @@
       font-size: 13px;
       color: #bbb;
       margin: 0;
-    }
+     }
 
     .team-section {
       background-color: #f9f9f9;
@@ -165,7 +158,7 @@
     .team-member .avatar {
       font-size: 34px;
       margin-bottom: 10px;
-      }
+    }
 
     .team-member h3 {
       font-size: 14px;
@@ -177,7 +170,7 @@
       font-size: 12px;
       color: var(--yellow-dark);
       margin: 0;
-    }
+     }
 
     .subtitle {
       color: #777;
@@ -188,20 +181,7 @@
 </head>
 <body>
 
-  <header>
-    <nav class="container">
-      <img src="logo.png" alt="NextGreen Logo" style="height: 45px;" />
-      <ul>
-        <li><a href="index.html">Home</a></li>
-        <li><a href="dashboard.html">Dashboard</a></li>
-        <li><a href="log.html">Log</a></li>
-        <li><a href="chat.html">AI Chat</a></li>
-        <li><a href="compare.html">Compare</a></li>
-        <li><a href="learn.html">Learn</a></li>
-        <li><a href="about.html" style="color: var(--yellow); font-weight: bold;">About</a></li>
-      </ul>
-    </nav>
-  </header>
+  <script src="header.js"></script>
 
   <div class="hero">
     <img src="logo.png" alt="NextGreen Logo" />
@@ -219,9 +199,8 @@
     <section>
       <div class="container">
         <h2 class="section-title">What is NextGreen?</h2>
-        <p>NextGreen is a browser-based platform empowering users to shrink their environmental footprint. You can log your daily habits like paper use, food waste, and energy consumption to instantly see how your choices compare to sustainable benchmarks.</p>
-        <p>Our AI coach reviews your habits and gives you simple, personalized tips to help you make greener choices every day.</p>
-
+        <p>NextGreen is a browser-based platform that empowers users to shrink their environmental footprint. You can log your daily habits — from paper use and food waste to energy consumption — and instantly see how your choices compare to sustainable benchmarks.</p>
+        <p>Our AI coach then reviews your habits and gives you simple, personalized tips to help you make greener choices every day.</p>
         <div class="cards">
           <div class="card">
             <div class="icon">📋</div>
@@ -246,10 +225,35 @@
         </div>
       </div>
     </section>
+    
+    <section class="sdg-section">
+      <div class="container">
+        <h2>Our Global Goals</h2>
+        <p class="intro">NextGreen is specifically tied to three UN Sustainable Development Goals.</p>
+        <div class="sdg-cards">
+          <div class="sdg-card">
+            <div class="sdg-num">12</div>
+            <h3>Responsible Consumption & Production</h3>
+            <p>We help users reduce wasteful habits in food, paper, and energy use.</p>
+          </div>
+          <div class="sdg-card">
+            <div class="sdg-num">13</div>
+            <h3>Climate Action</h3>
+            <p>Tracking your carbon footprint turns you into an active part of the solution to climate change.</p>
+          </div>
+          <div class="sdg-card">
+            <div class="sdg-num">15</div>
+            <h3>Life on Land</h3>
+            <p>Less waste and consumption means healthier ecosystems and more biodiversity on land.</p>
+          </div>
+        </div>
+      </div>
+    </section>
 
     <section class="team-section">
       <div class="container">
         <h2 class="section-title">Meet the Team</h2>
+        <p class="subtitle">Grade 9 — Introduction to Computer Programming</p>
         <div class="team-grid">
           <div class="team-member">
             <div class="avatar">⚡</div>
@@ -263,12 +267,12 @@
           </div>
           <div class="team-member">
             <div class="avatar">🛠️</div>
-            <h3>William</h3>
+            <h3>William Camba Vasquez</h3>
             <p>Front End & Back End</p>
           </div>
           <div class="team-member">
             <div class="avatar">🖼️</div>
-            <h3>Joon</h3>
+            <h3>Joon Song</h3>
             <p>Images & Visuals</p>
           </div>
           <div class="team-member">
@@ -282,13 +286,9 @@
 
   </main>
 
-  <footer>
-    <div class="container">
-      <p>Aligned with UN SDGs 12, 13, and 15</p>
-    </div>
-  </footer>
+  <script src="footer.js"></script>
 
 </body>
 </html>
 
-  <!-- yay all done -->
+
