@@ -63,10 +63,29 @@
     function wireNav() {
         var toggle = document.getElementById("siteNavToggle");
         var linksEl = document.getElementById("siteNavLinks");
+
+        function closeMenu() {
+            if (linksEl) linksEl.classList.remove("open");
+            if (toggle) toggle.classList.remove("open");
+        }
+
         if (toggle && linksEl) {
-            toggle.addEventListener("click", function () {
+            toggle.addEventListener("click", function (e) {
+                e.stopPropagation();
                 linksEl.classList.toggle("open");
                 toggle.classList.toggle("open");
+            });
+
+            // Tapping any nav link should close the menu (mobile UX).
+            linksEl.addEventListener("click", function (e) {
+                if (e.target.tagName === "A") closeMenu();
+            });
+
+            // Tapping outside closes it too.
+            document.addEventListener("click", function (e) {
+                if (!linksEl.classList.contains("open")) return;
+                if (linksEl.contains(e.target) || toggle.contains(e.target)) return;
+                closeMenu();
             });
         }
 
@@ -74,6 +93,7 @@
         if (logoutLink) {
             logoutLink.addEventListener("click", function (e) {
                 e.preventDefault();
+                closeMenu();
                 if (typeof logout === "function") {
                     logout();
                 } else {
