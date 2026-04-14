@@ -3,13 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat</title>
+    <title>Next Green AI</title>
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body class="chat-page">
     <div class="chat-wrapper">
         <div class="chat-header">
-            <h2>Chat Assistant</h2>
+            <img src="assets/images/robot.png" alt="AI Robot" class="chat-robot-icon">
+            <h2>Next Green AI</h2>
         </div>
         <div class="chat-messages" id="chatMessages"></div>
         <form class="chat-input" id="chatForm">
@@ -17,6 +18,8 @@
             <button type="submit" id="sendBtn">Send</button>
         </form>
     </div>
+    <script src="js/auth.js"></script>
+    <script>requireAuth();</script>
     <script src="js/chat.js"></script>
 </body>
 </html>

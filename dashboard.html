@@ -2,9 +2,142 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Next Green AI</title>
+    <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
+    <script src="js/auth.js"></script>
+    <script>requireAuth();</script>
 
+    <header>
+        <nav class="container">
+            <a href="index.html"><strong>Next Green AI</strong></a>
+            <ul>
+                <li><a href="dashboard.html">Dashboard</a></li>
+                <li><a href="chat.html">Chat</a></li>
+                <li><a href="compare.html">Compare</a></li>
+                <li><a href="learn.html">Learn</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="#" onclick="logout()">Logout</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="container dashboard">
+        <div class="dashboard-top">
+            <h1>Your Eco Dashboard</h1>
+            <div class="dashboard-actions">
+                <a href="chat.html" class="btn btn-primary">Log Today</a>
+                <a href="compare.html" class="btn btn-secondary">Compare</a>
+            </div>
+        </div>
+
+        <!-- Summary Cards -->
+        <div class="dashboard-cards">
+            <div class="dash-card">
+                <div class="dash-card-icon">&#128167;</div>
+                <div class="dash-card-label">Water Usage</div>
+                <div class="dash-card-value" id="waterValue">--</div>
+                <div class="dash-card-unit">liters today</div>
+            </div>
+            <div class="dash-card">
+                <div class="dash-card-icon">&#9729;</div>
+                <div class="dash-card-label">Carbon Footprint</div>
+                <div class="dash-card-value" id="carbonValue">--</div>
+                <div class="dash-card-unit">kg CO2 today</div>
+            </div>
+            <div class="dash-card">
+                <div class="dash-card-icon">&#128662;</div>
+                <div class="dash-card-label">Transport</div>
+                <div class="dash-card-value dash-card-value-text" id="transportValue">--</div>
+                <div class="dash-card-unit">today</div>
+            </div>
+            <div class="dash-card">
+                <div class="dash-card-icon">&#9889;</div>
+                <div class="dash-card-label">Energy</div>
+                <div class="dash-card-value dash-card-value-text" id="energyValue">--</div>
+                <div class="dash-card-unit">today</div>
+            </div>
+        </div>
+
+        <!-- Steps to Improve -->
+        <section class="dashboard-section">
+            <h2>Steps to Improve</h2>
+            <div id="stepsContainer" class="steps-list">
+                <p class="empty-state">No improvement steps yet. <a href="chat.html">Chat with the AI</a> to get personalized tips!</p>
+            </div>
+        </section>
+
+        <!-- Recent Logs -->
+        <section class="dashboard-section">
+            <h2>Recent Logs</h2>
+            <div id="logsContainer" class="logs-list">
+                <p class="empty-state">No logs recorded yet. <a href="chat.html">Start a conversation</a> to log your daily impact.</p>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>Next Green AI &copy; 2026</p>
+    </footer>
+
+    <script>
+        async function renderDashboard() {
+            try {
+                var res = await fetch("/api/logs", { headers: authHeaders() });
+                if (!res.ok) throw new Error("Failed to fetch logs");
+                var logs = await res.json();
+
+                if (logs.length === 0) return;
+
+                var latest = logs[0];
+
+                if (latest.water_liters != null) {
+                    document.getElementById("waterValue").textContent = latest.water_liters;
+                }
+                if (latest.carbon_kg != null) {
+                    document.getElementById("carbonValue").textContent = latest.carbon_kg;
+                }
+                if (latest.transport) {
+                    document.getElementById("transportValue").textContent = latest.transport;
+                }
+                if (latest.energy) {
+                    document.getElementById("energyValue").textContent = latest.energy;
+                }
+
+                if (latest.steps && latest.steps.length > 0) {
+                    var stepsContainer = document.getElementById("stepsContainer");
+                    stepsContainer.innerHTML = "";
+                    latest.steps.forEach(function(step) {
+                        var div = document.createElement("div");
+                        div.className = "step-item";
+                        div.textContent = step;
+                        stepsContainer.appendChild(div);
+                    });
+                }
+
+                var logsContainer = document.getElementById("logsContainer");
+                logsContainer.innerHTML = "";
+                logs.slice(0, 5).forEach(function(log) {
+                    var date = new Date(log.created_at).toLocaleDateString();
+                    var div = document.createElement("div");
+                    div.className = "log-entry";
+                    div.innerHTML =
+                        "<div class='log-date'>" + date + "</div>" +
+                        "<div class='log-details'>" +
+                            "<span>Water: " + (log.water_liters != null ? log.water_liters + "L" : "--") + "</span>" +
+                            "<span>CO2: " + (log.carbon_kg != null ? log.carbon_kg + "kg" : "--") + "</span>" +
+                            "<span>Transport: " + (log.transport || "--") + "</span>" +
+                        "</div>";
+                    logsContainer.appendChild(div);
+                });
+            } catch (err) {
+                console.error("Dashboard error:", err);
+            }
+        }
+
+        renderDashboard();
+    </script>
 </body>
 </html>
