@@ -1271,3 +1271,43 @@ input:focus, textarea:focus, select:focus {
     display: block;
     margin-top: 2px;
 }
+
+/* ------------------------------------------------------------------ */
+/* 404 page                                                            */
+/* ------------------------------------------------------------------ */
+
+.not-found-page {
+    text-align: center;
+    padding: 4rem 1rem 5rem;
+}
+
+.not-found-page h1 {
+    font-size: 6rem;
+    color: var(--green-dark);
+    margin-bottom: 0.5rem;
+    letter-spacing: -2px;
+}
+
+.not-found-page .lead {
+    color: #6e5b47;
+    max-width: 520px;
+    margin: 0 auto 2rem;
+}
+
+.not-found-actions {
+    display: flex;
+    gap: 0.75rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.btn-outline-dark {
+    background: transparent;
+    color: var(--green-dark);
+    border: 1.5px solid var(--green-dark);
+}
+
+.btn-outline-dark:hover {
+    background: var(--green-dark);
+    color: #fff;
+}

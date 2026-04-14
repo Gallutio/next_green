@@ -293,6 +293,14 @@ app.get("/api/logs", authenticate, async function (req, res) {
     }
 });
 
+// Fallback: serve the friendly 404 page for any unmatched non-API route.
+app.use(function (req, res) {
+    if (req.path.startsWith("/api/")) {
+        return res.status(404).json({ error: "Not found" });
+    }
+    res.status(404).sendFile(path.join(__dirname, "404.html"));
+});
+
 const PORT = 3000;
 app.listen(PORT, function () {
     console.log("Server running at http://localhost:" + PORT);
