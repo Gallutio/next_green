@@ -27,7 +27,7 @@ Plain HTML/CSS/JS on the front end. Express on the server. Supabase for auth and
 
 ## Team
 
-- Guillermo Camba Vasquez — front and back end
+- Guillermo Camba Vazquez — front and back end
 - Ethan Nalinakshan — front end
 - Sabina Lee — content writing
 - Yoojoun (Alex) Song — images and visuals
