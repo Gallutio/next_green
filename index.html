@@ -19,7 +19,7 @@
             small things you can actually change.
         </p>
         <div class="home-hero-actions">
-            <a href="signup.html" class="btn btn-secondary">Get started</a>
+            <a href="signup.html" class="btn btn-secondary" id="homeCta">Get started</a>
             <a href="learn.html" class="btn btn-outline">Learn more</a>
         </div>
     </section>
@@ -56,5 +56,14 @@
 
     <script src="js/auth.js"></script>
     <script src="js/components.js"></script>
+    <script>
+        if (getToken()) {
+            var cta = document.getElementById("homeCta");
+            if (cta) {
+                cta.textContent = "Go to dashboard";
+                cta.href = "dashboard.html";
+            }
+        }
+    </script>
 </body>
 </html>
