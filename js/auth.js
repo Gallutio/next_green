@@ -42,3 +42,10 @@ function logout() {
     clearAuth();
     window.location.href = "/login.html";
 }
+
+// Called by pages when any API call returns 401 — session expired.
+function handleExpiredSession() {
+    clearAuth();
+    alert("Your session has expired. Please log in again.");
+    window.location.href = "/login.html";
+}

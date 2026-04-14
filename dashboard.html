@@ -10,19 +10,7 @@
     <script src="js/auth.js"></script>
     <script>requireAuth();</script>
 
-    <header>
-        <nav class="container">
-            <a href="index.html"><strong>Next Green AI</strong></a>
-            <ul>
-                <li><a href="dashboard.html">Dashboard</a></li>
-                <li><a href="chat.html">Chat</a></li>
-                <li><a href="compare.html">Compare</a></li>
-                <li><a href="learn.html">Learn</a></li>
-                <li><a href="about.html">About</a></li>
-                <li><a href="#" onclick="logout()">Logout</a></li>
-            </ul>
-        </nav>
-    </header>
+    <header class="site-header" id="site-header"></header>
 
     <main class="container dashboard">
         <div class="dashboard-top">
@@ -33,108 +21,182 @@
             </div>
         </div>
 
+        <p class="dashboard-summary" id="dashboardSummary"></p>
+
         <!-- Summary Cards -->
         <div class="dashboard-cards">
             <div class="dash-card">
                 <div class="dash-card-icon">&#128167;</div>
-                <div class="dash-card-label">Water Usage</div>
-                <div class="dash-card-value" id="waterValue">--</div>
-                <div class="dash-card-unit">liters today</div>
+                <div class="dash-card-label">Water</div>
+                <div class="dash-card-value" id="waterValue">&mdash;</div>
+                <div class="dash-card-unit" id="waterUnit">liters today</div>
+                <div class="dash-card-compare" id="waterCompare"></div>
             </div>
             <div class="dash-card">
                 <div class="dash-card-icon">&#9729;</div>
-                <div class="dash-card-label">Carbon Footprint</div>
-                <div class="dash-card-value" id="carbonValue">--</div>
-                <div class="dash-card-unit">kg CO2 today</div>
+                <div class="dash-card-label">Carbon</div>
+                <div class="dash-card-value" id="carbonValue">&mdash;</div>
+                <div class="dash-card-unit" id="carbonUnit">kg CO&#8322; today</div>
+                <div class="dash-card-compare" id="carbonCompare"></div>
             </div>
             <div class="dash-card">
                 <div class="dash-card-icon">&#128662;</div>
                 <div class="dash-card-label">Transport</div>
-                <div class="dash-card-value dash-card-value-text" id="transportValue">--</div>
+                <div class="dash-card-value dash-card-value-text" id="transportValue">&mdash;</div>
                 <div class="dash-card-unit">today</div>
             </div>
             <div class="dash-card">
                 <div class="dash-card-icon">&#9889;</div>
                 <div class="dash-card-label">Energy</div>
-                <div class="dash-card-value dash-card-value-text" id="energyValue">--</div>
-                <div class="dash-card-unit">today</div>
+                <div class="dash-card-value dash-card-value-text" id="energyValue">&mdash;</div>
+                <div class="dash-card-unit" id="energyUnit">today</div>
             </div>
         </div>
 
         <!-- Steps to Improve -->
         <section class="dashboard-section">
-            <h2>Steps to Improve</h2>
+            <h2>Steps to improve</h2>
             <div id="stepsContainer" class="steps-list">
-                <p class="empty-state">No improvement steps yet. <a href="chat.html">Chat with the AI</a> to get personalized tips!</p>
+                <p class="empty-state">No improvement steps yet. <a href="chat.html">Chat with the AI</a> to get personalized tips.</p>
             </div>
         </section>
 
         <!-- Recent Logs -->
         <section class="dashboard-section">
-            <h2>Recent Logs</h2>
+            <h2>Recent logs</h2>
             <div id="logsContainer" class="logs-list">
-                <p class="empty-state">No logs recorded yet. <a href="chat.html">Start a conversation</a> to log your daily impact.</p>
+                <p class="empty-state">No logs yet. <a href="chat.html">Start a conversation</a> to log your first day.</p>
             </div>
         </section>
     </main>
 
-    <footer>
-        <p>Next Green AI &copy; 2026</p>
-    </footer>
+    <footer class="site-footer" id="site-footer"></footer>
 
+    <script src="js/components.js"></script>
     <script>
+        // Rough global-average reference points for context lines on cards.
+        var REF_WATER_LITERS = 140;   // mid-range per-person daily use
+        var REF_CARBON_KG = 13;       // world average per-person daily CO2
+
+        function fmtNumber(n) {
+            if (n == null) return null;
+            var num = Number(n);
+            if (!isFinite(num)) return null;
+            if (num >= 100) return Math.round(num).toString();
+            if (num >= 10) return num.toFixed(1).replace(/\.0$/, "");
+            return num.toFixed(1).replace(/\.0$/, "");
+        }
+
+        function compareLine(value, reference, unit) {
+            if (value == null) return "";
+            var diff = value - reference;
+            var pct = Math.round(Math.abs(diff) / reference * 100);
+            if (pct < 5) return "On par with the world avg (~" + reference + " " + unit + ")";
+            if (diff < 0) return pct + "% below world avg";
+            return pct + "% above world avg";
+        }
+
+        function classifyEnergy(label) {
+            if (!label) return "";
+            var lower = label.toLowerCase();
+            if (lower.indexOf("low") === 0) return "low";
+            if (lower.indexOf("mod") === 0) return "moderate";
+            if (lower.indexOf("high") === 0) return "high";
+            return "";
+        }
+
+        function renderSummary(latest) {
+            var summaryEl = document.getElementById("dashboardSummary");
+            if (!latest) {
+                summaryEl.textContent = "";
+                return;
+            }
+            var when = new Date(latest.created_at).toLocaleDateString(undefined, {
+                weekday: "long", month: "short", day: "numeric"
+            });
+            var parts = [];
+            if (latest.carbon_kg != null) parts.push("about " + fmtNumber(latest.carbon_kg) + " kg CO\u2082");
+            if (latest.water_liters != null) parts.push(fmtNumber(latest.water_liters) + " L water");
+            summaryEl.textContent = "Latest log, " + when +
+                (parts.length ? " \u2014 " + parts.join(", ") + "." : ".");
+        }
+
         async function renderDashboard() {
             try {
                 var res = await fetch("/api/logs", { headers: authHeaders() });
+                if (res.status === 401) { handleExpiredSession(); return; }
                 if (!res.ok) throw new Error("Failed to fetch logs");
                 var logs = await res.json();
-
-                if (logs.length === 0) return;
+                if (!logs || logs.length === 0) return;
 
                 var latest = logs[0];
+                renderSummary(latest);
 
+                var waterEl = document.getElementById("waterValue");
+                var waterCompareEl = document.getElementById("waterCompare");
                 if (latest.water_liters != null) {
-                    document.getElementById("waterValue").textContent = latest.water_liters;
-                }
-                if (latest.carbon_kg != null) {
-                    document.getElementById("carbonValue").textContent = latest.carbon_kg;
-                }
-                if (latest.transport) {
-                    document.getElementById("transportValue").textContent = latest.transport;
-                }
-                if (latest.energy) {
-                    document.getElementById("energyValue").textContent = latest.energy;
+                    waterEl.textContent = fmtNumber(latest.water_liters);
+                    waterCompareEl.textContent = compareLine(latest.water_liters, REF_WATER_LITERS, "L");
                 }
 
-                if (latest.steps && latest.steps.length > 0) {
+                var carbonEl = document.getElementById("carbonValue");
+                var carbonCompareEl = document.getElementById("carbonCompare");
+                if (latest.carbon_kg != null) {
+                    carbonEl.textContent = fmtNumber(latest.carbon_kg);
+                    carbonCompareEl.textContent = compareLine(latest.carbon_kg, REF_CARBON_KG, "kg");
+                }
+
+                var transportEl = document.getElementById("transportValue");
+                if (latest.transport) transportEl.textContent = latest.transport;
+
+                var energyEl = document.getElementById("energyValue");
+                var energyUnitEl = document.getElementById("energyUnit");
+                if (latest.energy) {
+                    energyEl.textContent = latest.energy;
+                    var tone = classifyEnergy(latest.energy);
+                    if (tone) energyEl.classList.add("tone-" + tone);
+                    energyUnitEl.textContent = "usage today";
+                }
+
+                if (latest.steps && latest.steps.length) {
                     var stepsContainer = document.getElementById("stepsContainer");
                     stepsContainer.innerHTML = "";
-                    latest.steps.forEach(function(step) {
+                    latest.steps.forEach(function (step, i) {
                         var div = document.createElement("div");
                         div.className = "step-item";
-                        div.textContent = step;
+                        div.innerHTML = '<span class="step-num">' + (i + 1) + '.</span> ' + escapeHtml(step);
                         stepsContainer.appendChild(div);
                     });
                 }
 
                 var logsContainer = document.getElementById("logsContainer");
                 logsContainer.innerHTML = "";
-                logs.slice(0, 5).forEach(function(log) {
-                    var date = new Date(log.created_at).toLocaleDateString();
+                logs.slice(0, 5).forEach(function (log) {
+                    var date = new Date(log.created_at).toLocaleDateString(undefined, {
+                        month: "short", day: "numeric"
+                    });
                     var div = document.createElement("div");
                     div.className = "log-entry";
                     div.innerHTML =
                         "<div class='log-date'>" + date + "</div>" +
                         "<div class='log-details'>" +
-                            "<span>Water: " + (log.water_liters != null ? log.water_liters + "L" : "--") + "</span>" +
-                            "<span>CO2: " + (log.carbon_kg != null ? log.carbon_kg + "kg" : "--") + "</span>" +
-                            "<span>Transport: " + (log.transport || "--") + "</span>" +
+                            "<span>&#128167; " + (log.water_liters != null ? fmtNumber(log.water_liters) + " L" : "\u2014") + "</span>" +
+                            "<span>&#9729; " + (log.carbon_kg != null ? fmtNumber(log.carbon_kg) + " kg" : "\u2014") + "</span>" +
+                            "<span>&#128662; " + escapeHtml(log.transport || "\u2014") + "</span>" +
+                            "<span>&#9889; " + escapeHtml(log.energy || "\u2014") + "</span>" +
                         "</div>";
                     logsContainer.appendChild(div);
                 });
             } catch (err) {
                 console.error("Dashboard error:", err);
             }
+        }
+
+        function escapeHtml(s) {
+            return String(s)
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;");
         }
 
         renderDashboard();

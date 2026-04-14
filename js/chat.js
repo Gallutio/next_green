@@ -8,6 +8,7 @@ var logSaved = false;
 async function fetchLatestLog() {
     try {
         var res = await fetch("/api/logs", { headers: authHeaders() });
+        if (res.status === 401) { handleExpiredSession(); return null; }
         if (!res.ok) return null;
         var logs = await res.json();
         return logs.length > 0 ? logs[0] : null;
@@ -28,21 +29,36 @@ function buildPreviousContext(latest) {
 }
 
 var conversationHistory = [];
-var userMessageCount = 0;
 
 async function initChat() {
     var latest = await fetchLatestLog();
     conversationHistory = [
         {
             role: "system",
-            content: "You are Next Green AI, a sustainability counselor. Your job is to help users log their daily environmental impact and give improvement advice.\n\n" +
-                "When you start a conversation, greet the user briefly, then begin asking them questions ONE AT A TIME to fill out their daily eco-log. Ask about:\n" +
-                "1. How many liters of water they used today (drinking, showering, dishes, laundry, etc.)\n" +
-                "2. How they commuted/traveled today (car, bus, bike, walk, etc.) and approximate distance\n" +
-                "3. Their energy usage habits today (lights left on, AC/heating, appliances)\n" +
-                "4. Any waste they produced (recycled? composted? threw away?)\n\n" +
-                "After gathering answers, estimate their carbon footprint for the day in kg CO2 and suggest 2-3 specific steps to improve.\n\n" +
-                "Be friendly, encouraging, and practical with your advice." +
+            content: "You are Next Green AI, a sustainability counselor that helps users log their daily environmental impact.\n\n" +
+                "TONE: Warm, practical, brief. No filler. One question per turn.\n\n" +
+                "GOAL: Gather four concrete numbers/facts, then produce a structured summary.\n\n" +
+                "ASK FOR THESE, ONE AT A TIME, IN THIS ORDER:\n" +
+                "1. Water: approximate LITERS today (showers ~60L each, toilet flushes ~6L, dishes ~10L, etc.). If the user is vague, give examples and ask for a rough estimate in liters.\n" +
+                "2. Transport: mode(s) and total KM. If they say only 'walk' or 'bus', ask roughly how far in km.\n" +
+                "3. Energy: ask whether lights/devices were left on when not in use and whether AC/heating/large appliances (oven, dryer, washing machine) ran today. You want to place them in low / moderate / high usage.\n" +
+                "4. Waste: did they mostly recycle/compost, a mix, or mostly throw away?\n\n" +
+                "RULES:\n" +
+                "- If an answer is vague (e.g., 'some', 'yes', 'a bit'), ASK A FOLLOW-UP to pin down a number or a clear low/moderate/high.\n" +
+                "- Keep your replies under 3 sentences until the final summary.\n" +
+                "- Do not repeat questions you have already asked.\n\n" +
+                "FINAL SUMMARY (send exactly one message shaped like this once you have all four answers):\n" +
+                "Here is your day at a glance:\n" +
+                "- Water: <N> L\n" +
+                "- Transport: <mode>, ~<N> km\n" +
+                "- Energy: <Low|Moderate|High> \u2014 <one-line reason>\n" +
+                "- Waste: <Mostly recycled|Mixed|Mostly landfill>\n" +
+                "- Estimated carbon today: ~<N> kg CO2\n\n" +
+                "Three things to try tomorrow:\n" +
+                "1. <specific tip based on their actual answers>\n" +
+                "2. <specific tip>\n" +
+                "3. <specific tip>\n\n" +
+                "CARBON ESTIMATE: Base your kg CO2 on sensible averages (car ~0.2 kg/km, bus ~0.1 kg/km, electricity ~0.4 kg/kWh, high-use day ~30 kWh, moderate ~15, low ~5, plus food/waste rough factor). Always give a single number, even if rough." +
                 buildPreviousContext(latest)
         }
     ];
@@ -101,7 +117,11 @@ async function extractAndSave() {
             body: JSON.stringify({ conversation: getConversationText() })
         });
 
-        if (!extractRes.ok) throw new Error("Failed to extract data");
+        if (extractRes.status === 401) { handleExpiredSession(); return; }
+        if (!extractRes.ok) {
+            var extractErr = await extractRes.json().catch(function () { return {}; });
+            throw new Error("Extract: " + (extractErr.error || extractRes.status));
+        }
 
         var ecoData = await extractRes.json();
 
@@ -112,7 +132,11 @@ async function extractAndSave() {
             body: JSON.stringify(ecoData)
         });
 
-        if (!saveRes.ok) throw new Error("Failed to save log");
+        if (saveRes.status === 401) { handleExpiredSession(); return; }
+        if (!saveRes.ok) {
+            var saveErr = await saveRes.json().catch(function () { return {}; });
+            throw new Error("Save: " + (saveErr.error || saveRes.status));
+        }
 
         logSaved = true;
 
@@ -129,21 +153,39 @@ async function extractAndSave() {
         console.error("Save error:", error);
         var messages = chatMessages.querySelectorAll(".message.assistant");
         var lastMsg = messages[messages.length - 1];
-        if (lastMsg) lastMsg.textContent = "Sorry, there was an error saving your log. Please try again.";
+        if (lastMsg) lastMsg.textContent = "Could not save your log: " + error.message;
     }
 }
 
-// Show the "Save to Dashboard" button
+// Show the "Save to Dashboard" button. Once shown it stays until saved.
 function showSaveButton() {
     if (logSaved || document.getElementById("saveToDashboard")) return;
 
     var div = document.createElement("div");
     div.className = "save-btn-container";
-    div.innerHTML = '<button id="saveToDashboard" class="save-dashboard-btn">Save to Dashboard</button>';
+    div.innerHTML =
+        '<p class="save-prompt">Looks like the AI has enough to log today. Review the summary above, then save it \u2014 or keep chatting to correct anything.</p>' +
+        '<button id="saveToDashboard" class="save-dashboard-btn">Save to Dashboard</button>';
     chatMessages.appendChild(div);
     chatMessages.scrollTop = chatMessages.scrollHeight;
 
     document.getElementById("saveToDashboard").addEventListener("click", extractAndSave);
+}
+
+// Did the AI just produce its final summary? We specifically prompted it to
+// open that message with "Here is your day at a glance" and include a carbon line.
+function isFinalSummary(text) {
+    if (!text) return false;
+    var lower = text.toLowerCase();
+    if (lower.indexOf("day at a glance") !== -1) return true;
+    // Fallback: contains a carbon line plus at least 3 of the labelled fields.
+    var hits = 0;
+    if (/water[:\s].+\dl/i.test(text) || /water[:\s].+liter/i.test(text)) hits++;
+    if (/transport[:\s]/i.test(text)) hits++;
+    if (/energy[:\s]/i.test(text)) hits++;
+    if (/waste[:\s]/i.test(text)) hits++;
+    if (/carbon[:\s].+kg/i.test(text) || /kg\s*co/i.test(text)) hits++;
+    return hits >= 4;
 }
 
 async function sendMessage(text) {
@@ -151,7 +193,6 @@ async function sendMessage(text) {
     addMessage(text, "user");
     userInput.value = "";
     sendBtn.disabled = true;
-    userMessageCount++;
     showTyping();
 
     try {
@@ -178,8 +219,8 @@ async function sendMessage(text) {
         conversationHistory.push({ role: "assistant", content: reply });
         addMessage(reply, "assistant");
 
-        // After 4+ user messages, the AI likely has enough info — show save button
-        if (userMessageCount >= 4 && !logSaved) {
+        // Show the save button only when the AI has produced its full summary.
+        if (!logSaved && isFinalSummary(reply)) {
             showSaveButton();
         }
 

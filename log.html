@@ -2,9 +2,88 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NextGreen &mdash; Logs</title>
+    <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
+    <script src="js/auth.js"></script>
+    <script>requireAuth();</script>
 
+    <header class="site-header" id="site-header"></header>
+
+    <main class="container logs-page">
+        <h1>Your logs</h1>
+        <p class="lead">Everything you've saved from the chat, most recent first.</p>
+
+        <div id="logsContainer" class="logs-list logs-full">
+            <p class="empty-state">Loading your logs...</p>
+        </div>
+    </main>
+
+    <footer class="site-footer" id="site-footer"></footer>
+
+    <script src="js/components.js"></script>
+    <script>
+        (async function () {
+            var container = document.getElementById("logsContainer");
+
+            try {
+                var res = await fetch("/api/logs", { headers: authHeaders() });
+                if (res.status === 401) { handleExpiredSession(); return; }
+                if (!res.ok) throw new Error("Failed to fetch logs");
+                var logs = await res.json();
+
+                if (!logs || logs.length === 0) {
+                    container.innerHTML =
+                        '<p class="empty-state">No logs yet. <a href="chat.html">Start a conversation</a> to record your first day.</p>';
+                    return;
+                }
+
+                container.innerHTML = "";
+                logs.forEach(function (log) {
+                    var date = new Date(log.created_at).toLocaleDateString(undefined, {
+                        year: "numeric", month: "short", day: "numeric"
+                    });
+
+                    var stepsHtml = "";
+                    if (log.steps && log.steps.length) {
+                        var items = log.steps.map(function (s) {
+                            return "<li>" + escapeHtml(s) + "</li>";
+                        }).join("");
+                        stepsHtml = '<ul class="log-steps">' + items + "</ul>";
+                    }
+
+                    var entry = document.createElement("div");
+                    entry.className = "log-entry";
+                    entry.innerHTML =
+                        '<div class="log-date">' + date + "</div>" +
+                        '<div class="log-details">' +
+                            "<span>Water: " + fmt(log.water_liters, "L") + "</span>" +
+                            "<span>CO" + "\u2082" + ": " + fmt(log.carbon_kg, "kg") + "</span>" +
+                            "<span>Transport: " + (log.transport || "--") + "</span>" +
+                            "<span>Energy: " + (log.energy || "--") + "</span>" +
+                            "<span>Waste: " + (log.waste || "--") + "</span>" +
+                        "</div>" +
+                        stepsHtml;
+                    container.appendChild(entry);
+                });
+            } catch (err) {
+                console.error(err);
+                container.innerHTML = '<p class="empty-state">Could not load your logs.</p>';
+            }
+
+            function fmt(value, unit) {
+                return value != null ? value + " " + unit : "--";
+            }
+
+            function escapeHtml(s) {
+                return String(s)
+                    .replace(/&/g, "&amp;")
+                    .replace(/</g, "&lt;")
+                    .replace(/>/g, "&gt;");
+            }
+        })();
+    </script>
 </body>
 </html>

@@ -2,9 +2,142 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NextGreen &mdash; Compare</title>
+    <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
+    <header class="site-header" id="site-header"></header>
 
+    <main class="container compare-page">
+        <h1>How do you compare?</h1>
+        <p class="lead">Your most recent day stacked against rough world averages. These numbers come from published carbon-footprint studies and aren't exact &mdash; use them as a rough yardstick.</p>
+
+        <div class="compare-grid">
+            <div class="compare-card">
+                <h3>&#9729; Carbon (kg CO&#8322; / day)</h3>
+                <div class="compare-row you">
+                    <span class="region">You (latest log)</span>
+                    <span class="value" id="youCarbon">--</span>
+                </div>
+                <div class="compare-row">
+                    <span class="region">High-income countries</span>
+                    <span class="value">~44 kg</span>
+                </div>
+                <div class="compare-row">
+                    <span class="region">Middle-income countries</span>
+                    <span class="value">~13 kg</span>
+                </div>
+                <div class="compare-row">
+                    <span class="region">Low-income countries</span>
+                    <span class="value">~4 kg</span>
+                </div>
+                <div class="compare-row">
+                    <span class="region">World average</span>
+                    <span class="value">~13 kg</span>
+                </div>
+            </div>
+
+            <div class="compare-card">
+                <h3>&#128167; Water (liters / day)</h3>
+                <div class="compare-row you">
+                    <span class="region">You (latest log)</span>
+                    <span class="value" id="youWater">--</span>
+                </div>
+                <div class="compare-row">
+                    <span class="region">US household</span>
+                    <span class="value">~300 L</span>
+                </div>
+                <div class="compare-row">
+                    <span class="region">Europe average</span>
+                    <span class="value">~140 L</span>
+                </div>
+                <div class="compare-row">
+                    <span class="region">Sub-Saharan Africa</span>
+                    <span class="value">~30 L</span>
+                </div>
+                <div class="compare-row">
+                    <span class="region">WHO basic need</span>
+                    <span class="value">~50 L</span>
+                </div>
+            </div>
+
+            <div class="compare-card">
+                <h3>&#128662; Transport (today)</h3>
+                <div class="compare-row you">
+                    <span class="region">You (latest log)</span>
+                    <span class="value" id="youTransport">--</span>
+                </div>
+                <div class="compare-row">
+                    <span class="region">Car, 20 km commute</span>
+                    <span class="value">~4 kg CO&#8322;</span>
+                </div>
+                <div class="compare-row">
+                    <span class="region">Bus, 20 km</span>
+                    <span class="value">~2 kg CO&#8322;</span>
+                </div>
+                <div class="compare-row">
+                    <span class="region">Bike / walk</span>
+                    <span class="value">0 kg CO&#8322;</span>
+                </div>
+            </div>
+
+            <div class="compare-card">
+                <h3>&#9889; Energy (today)</h3>
+                <div class="compare-row you">
+                    <span class="region">You (latest log)</span>
+                    <span class="value" id="youEnergy">--</span>
+                </div>
+                <div class="compare-row">
+                    <span class="region">Average home / day</span>
+                    <span class="value">~30 kWh</span>
+                </div>
+                <div class="compare-row">
+                    <span class="region">Efficient home</span>
+                    <span class="value">~10 kWh</span>
+                </div>
+            </div>
+        </div>
+
+        <p class="compare-note" id="compareNote">
+            Log in and chat with the AI to record a day &mdash; then your numbers show up here next to the averages.
+        </p>
+    </main>
+
+    <footer class="site-footer" id="site-footer"></footer>
+
+    <script src="js/auth.js"></script>
+    <script src="js/components.js"></script>
+    <script>
+        (async function () {
+            if (!getToken()) return;
+
+            try {
+                var res = await fetch("/api/logs", { headers: authHeaders() });
+                if (res.status === 401) { handleExpiredSession(); return; }
+                if (!res.ok) return;
+                var logs = await res.json();
+                if (!logs || logs.length === 0) return;
+
+                var latest = logs[0];
+                if (latest.carbon_kg != null) {
+                    document.getElementById("youCarbon").textContent = latest.carbon_kg + " kg";
+                }
+                if (latest.water_liters != null) {
+                    document.getElementById("youWater").textContent = latest.water_liters + " L";
+                }
+                if (latest.transport) {
+                    document.getElementById("youTransport").textContent = latest.transport;
+                }
+                if (latest.energy) {
+                    document.getElementById("youEnergy").textContent = latest.energy;
+                }
+                document.getElementById("compareNote").textContent =
+                    "Showing your most recent log. Log another day to update these.";
+            } catch (err) {
+                console.error("Compare fetch failed:", err);
+            }
+        })();
+    </script>
 </body>
 </html>

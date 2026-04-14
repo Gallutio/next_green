@@ -3,140 +3,71 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NextGreen | Contact Us</title>
-
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
-
-    <style>
-        /* 1. Basic Reset */
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: 'Inter', sans-serif;
-            background-color: #fcfcfc;
-        }
-
-        /* 2. Banner Container */
-        .main-banner {
-            background-color: #ffffff;
-            padding: 80px 20px;
-            text-align: center;
-            border-bottom: 2px solid #f0f0f0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-
-        /* 3. Title Styling (Forest Green) */
-        .home-link {
-            text-decoration: none; /* Removes the underline */
-            display: inline-block;
-        }
-
-        .website-title {
-            color: #228B22; /* Forest Green */
-            font-family: 'Playfair Display', serif;
-            font-size: 4.5rem;
-            margin: 0;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            cursor: pointer;
-        }
-
-        /* Hover Effect: Title grows and changes shade */
-        .website-title:hover {
-            color: #1a5e1a;
-            transform: scale(1.08);
-        }
-
-        /* 4. Slogan Styling (Lighter Green) */
-        .website-slogan {
-            color: #81b022; /* Lighter Green */
-            font-family: 'Inter', sans-serif;
-            font-size: 1.1rem;
-            margin-top: 15px;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-            font-weight: 600;
-        }
-
-        /* 5. Team Section Styling */
-        .content-section {
-            max-width: 800px;
-            margin: 50px auto;
-            padding: 20px;
-        }
-
-        .team-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 30px;
-        }
-
-        .team-table th {
-            text-align: left;
-            color: #228B22;
-            border-bottom: 2px solid #81b022;
-            padding: 10px;
-        }
-
-        .team-table td {
-            padding: 15px 10px;
-            border-bottom: 1px solid #eee;
-        }
-
-        .email-link {
-            color: #005e5d;
-            text-decoration: none;
-            font-weight: bold;
-        }
-
-        .email-link:hover {
-            text-decoration: underline;
-        }
-    </style>
+    <title>NextGreen &mdash; Contact</title>
+    <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
+    <header class="site-header" id="site-header"></header>
 
-    <header class="main-banner">
-        <a href="index.html" class="home-link">
-            <h1 class="website-title">NextGreen</h1>
-        </a>
-        <p class="website-slogan">Track today. Transform tomorrow</p>
-    </header>
+    <section class="page-hero">
+        <h1>Get in <span>touch.</span></h1>
+        <p>Questions, feedback, or ideas for the site? Email anyone on the team below &mdash; we're all students, so replies may take a day or two.</p>
+    </section>
 
-    <div class="content-section">
-        <table class="team-table">
+    <main class="container contact-page">
+        <h2 class="section-title">The team</h2>
+        <p class="lead">Grade 9 &mdash; Introduction to Computer Programming. Everyone listed here worked on a different part of NextGreen.</p>
+
+        <table class="contact-table">
             <thead>
                 <tr>
-                    <th>Member Name</th>
-                    <th>Email Address</th>
+                    <th>Member</th>
+                    <th>Email</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
-                    <td>Guillermo Camba Vasquez</td>
+                    <td>
+                        Guillermo Camba Vasquez
+                        <span class="contact-role">Front &amp; back end</span>
+                    </td>
                     <td><a href="mailto:cambavazquezg@ismanila.org" class="email-link">cambavazquezg@ismanila.org</a></td>
                 </tr>
                 <tr>
-                    <td>Yoojoun (Alex) Song</td>
+                    <td>
+                        Yoojoun (Alex) Song
+                        <span class="contact-role">Images &amp; visuals</span>
+                    </td>
                     <td><a href="mailto:songyo@ismanila.org" class="email-link">songyo@ismanila.org</a></td>
                 </tr>
                 <tr>
-                    <td>Alex Vasquez</td>
+                    <td>
+                        Alex Vasquez
+                        <span class="contact-role">Writing</span>
+                    </td>
                     <td><a href="mailto:vasqueza@ismanila.org" class="email-link">vasqueza@ismanila.org</a></td>
                 </tr>
                 <tr>
-                    <td>Sabina Elena Marie Lee</td>
+                    <td>
+                        Sabine Elena Marie Lee
+                        <span class="contact-role">Content writing</span>
+                    </td>
                     <td><a href="mailto:29sa072@ismanila.org" class="email-link">29sa072@ismanila.org</a></td>
                 </tr>
                 <tr>
-                    <td>Ethan Nalinakshan</td>
+                    <td>
+                        Ethan Nalinakshan
+                        <span class="contact-role">Front end</span>
+                    </td>
                     <td><a href="mailto:nalinakshane@ismanila.org" class="email-link">nalinakshane@ismanila.org</a></td>
                 </tr>
             </tbody>
         </table>
-    </div>
+    </main>
 
+    <footer class="site-footer" id="site-footer"></footer>
+
+    <script src="js/auth.js"></script>
+    <script src="js/components.js"></script>
 </body>
 </html>

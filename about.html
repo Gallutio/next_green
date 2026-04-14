@@ -1,294 +1,116 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>NextGreen - About Us</title>
-  <link rel="stylesheet" href="style.css" />
-  <style>
-    .hero {
-      background-color: var(--green-dark);
-      color: white;
-      text-align: center;
-      padding: 60px 20px;
-      border-bottom: 3px solid var(--yellow);
-    }
-
-    .hero img {
-      height: 90px;
-      margin: 0 auto 20px auto;
-    }
-
-    .hero h1 span {
-      color: var(--yellow);
-    }
-
-    .hero p {
-      color: #ccc;
-      max-width: 600px;
-      margin: 0 auto 20px auto;
-      }
-
-    .sdg-badges {
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-    }
-
-    .badge {
-      border: 1px solid var(--yellow);
-      color: var(--yellow);
-      padding: 5px 14px;
-      border-radius: 20px;
-      font-size: 13px;
-    }
-
-    .section-title {
-      color: var(--green-dark);
-      margin-bottom: 15px;
-      border-left: 4px solid var(--yellow);
-      padding-left: 12px;
-    }
-
-    .cards {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 20px;
-      margin-top: 20px;
-    }
-
-    .card {
-      background-color: #f9f9f9;
-      border: 1px solid #ddd;
-      border-top: 4px solid var(--yellow);
-      border-radius: 8px;
-      padding: 20px;
-      flex: 1 1 200px;
-    }
-
-    .card .icon {
-      font-size: 28px;
-      margin-bottom: 10px;
-    }
-
-    .card h3 {
-      color: var(--green-dark);
-      margin-bottom: 8px;
-    }
-
-    .card p {
-      font-size: 14px;
-      color: #666;
-      margin: 0;
-    }
-
-    .sdg-section {
-      background-color: var(--green-dark);
-      color: white;
-      padding: 60px 0;
-      text-align: center;
-    }
-
-    .sdg-section h2 {
-      color: var(--yellow);
-      margin-bottom: 10px;
-    }
-
-    .sdg-section .intro {
-      color: #ccc;
-      margin-bottom: 30px;
-    }
-
-    .sdg-cards {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 20px;
-      justify-content: center;
-    }
-
-    .sdg-card {
-      background-color: rgba(255, 255, 255, 0.08);
-      border: 1px solid var(--yellow-dark);
-      border-radius: 10px;
-      padding: 25px 20px;
-      flex: 1 1 220px;
-      text-align: left;
-    }
-
-    .sdg-card .sdg-num {
-      font-size: 36px;
-      font-weight: bold;
-      color: var(--yellow);
-      margin-bottom: 5px;
-    }
-
-    .sdg-card h3 {
-      color: white;
-      margin-bottom: 8px;
-    }
-
-    .sdg-card p {
-      font-size: 13px;
-      color: #bbb;
-      margin: 0;
-     }
-
-    .team-section {
-      background-color: #f9f9f9;
-      padding: 60px 0;
-    }
-
-    .team-grid {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 15px;
-      justify-content: center;
-      margin-top: 30px;
-    }
-
-    .team-member {
-      background-color: white;
-      border: 1px solid #ddd;
-      border-radius: 10px;
-      padding: 25px 20px;
-      width: 160px;
-      text-align: center;
-    }
-
-    .team-member .avatar {
-      font-size: 34px;
-      margin-bottom: 10px;
-    }
-
-    .team-member h3 {
-      font-size: 14px;
-      color: var(--green-dark);
-      margin-bottom: 5px;
-    }
-
-    .team-member p {
-      font-size: 12px;
-      color: var(--yellow-dark);
-      margin: 0;
-     }
-
-    .subtitle {
-      color: #777;
-      font-size: 14px;
-      margin-top: 5px;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NextGreen &mdash; About</title>
+    <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
+    <header class="site-header" id="site-header"></header>
 
-  <script src="header.js"></script>
-
-  <div class="hero">
-    <img src="logo.png" alt="NextGreen Logo" />
-    <h1>Track <span>today.</span> Transform tomorrow.</h1>
-    <p>NextGreen helps you understand and reduce your environmental footprint through daily habit tracking and AI-powered coaching.</p>
-    <div class="sdg-badges">
-      <span class="badge">SDG 12</span>
-      <span class="badge">SDG 13</span>
-      <span class="badge">SDG 15</span>
-    </div>
-  </div>
-
-  <main>
-
-    <section>
-      <div class="container">
-        <h2 class="section-title">What is NextGreen?</h2>
-        <p>NextGreen is a browser-based platform that empowers users to shrink their environmental footprint. You can log your daily habits — from paper use and food waste to energy consumption — and instantly see how your choices compare to sustainable benchmarks.</p>
-        <p>Our AI coach then reviews your habits and gives you simple, personalized tips to help you make greener choices every day.</p>
-        <div class="cards">
-          <div class="card">
-            <div class="icon">📋</div>
-            <h3>Daily Logging</h3>
-            <p>Track paper, food waste, and energy use easily every day.</p>
-          </div>
-          <div class="card">
-            <div class="icon">📊</div>
-            <h3>Carbon Dashboard</h3>
-            <p>See your carbon footprint visualized and compared to global averages.</p>
-          </div>
-          <div class="card">
-            <div class="icon">🤖</div>
-            <h3>AI Coaching</h3>
-            <p>Get personalized advice from our AI on how to improve your habits.</p>
-          </div>
-          <div class="card">
-            <div class="icon">🌍</div>
-            <h3>Global Comparison</h3>
-            <p>Compare your impact against first, second, and third-world averages.</p>
-          </div>
+    <section class="page-hero">
+        <img src="assets/images/logo.png" alt="NextGreen logo" class="page-hero-logo">
+        <h1>Track <span>today.</span> Transform tomorrow.</h1>
+        <p>We built NextGreen to make it easier to see the footprint of normal everyday choices, and to nudge them in a greener direction.</p>
+        <div class="sdg-badges">
+            <span class="sdg-badge">SDG 12</span>
+            <span class="sdg-badge">SDG 13</span>
+            <span class="sdg-badge">SDG 15</span>
         </div>
-      </div>
-    </section>
-    
-    <section class="sdg-section">
-      <div class="container">
-        <h2>Our Global Goals</h2>
-        <p class="intro">NextGreen is specifically tied to three UN Sustainable Development Goals.</p>
-        <div class="sdg-cards">
-          <div class="sdg-card">
-            <div class="sdg-num">12</div>
-            <h3>Responsible Consumption & Production</h3>
-            <p>We help users reduce wasteful habits in food, paper, and energy use.</p>
-          </div>
-          <div class="sdg-card">
-            <div class="sdg-num">13</div>
-            <h3>Climate Action</h3>
-            <p>Tracking your carbon footprint turns you into an active part of the solution to climate change.</p>
-          </div>
-          <div class="sdg-card">
-            <div class="sdg-num">15</div>
-            <h3>Life on Land</h3>
-            <p>Less waste and consumption means healthier ecosystems and more biodiversity on land.</p>
-          </div>
-        </div>
-      </div>
     </section>
 
-    <section class="team-section">
-      <div class="container">
-        <h2 class="section-title">Meet the Team</h2>
-        <p class="subtitle">Grade 9 — Introduction to Computer Programming</p>
-        <div class="team-grid">
-          <div class="team-member">
-            <div class="avatar">⚡</div>
-            <h3>Ethan Nalinakshan</h3>
-            <p>Front End</p>
-          </div>
-          <div class="team-member">
-            <div class="avatar">✍️</div>
-            <h3>Sabine Lee</h3>
-            <p>Content Writing</p>
-          </div>
-          <div class="team-member">
-            <div class="avatar">🛠️</div>
-            <h3>William Camba Vasquez</h3>
-            <p>Front End & Back End</p>
-          </div>
-          <div class="team-member">
-            <div class="avatar">🖼️</div>
-            <h3>Joon Song</h3>
-            <p>Images & Visuals</p>
-          </div>
-          <div class="team-member">
-            <div class="avatar">📝</div>
-            <h3>Alex V.</h3>
-            <p>Writing</p>
-          </div>
-        </div>
-      </div>
-    </section>
+    <main>
+        <section class="container">
+            <h2 class="section-title">What is NextGreen?</h2>
+            <p>NextGreen is a browser-based platform where you log your daily habits &mdash; paper use, food waste, energy, transport &mdash; and get a reading on how your choices compare to sustainable benchmarks.</p>
+            <p>An AI coach then reviews what you logged and suggests a couple of simple, specific tweaks to try the next day. Nothing dramatic; just the stuff that adds up.</p>
+            <div class="info-cards">
+                <div class="info-card">
+                    <div class="icon">&#128221;</div>
+                    <h3>Daily logging</h3>
+                    <p>Track paper, food waste and energy use in a short daily chat.</p>
+                </div>
+                <div class="info-card">
+                    <div class="icon">&#128202;</div>
+                    <h3>Carbon dashboard</h3>
+                    <p>Your footprint visualised and compared to global averages.</p>
+                </div>
+                <div class="info-card">
+                    <div class="icon">&#129302;</div>
+                    <h3>AI coaching</h3>
+                    <p>Tips come from your actual logs &mdash; not a generic checklist.</p>
+                </div>
+                <div class="info-card">
+                    <div class="icon">&#127758;</div>
+                    <h3>Global comparison</h3>
+                    <p>See your impact next to first-, second- and third-world averages.</p>
+                </div>
+            </div>
+        </section>
 
-  </main>
+        <section class="sdg-section">
+            <div class="container">
+                <h2>Our global goals</h2>
+                <p class="intro">NextGreen is tied to three UN Sustainable Development Goals.</p>
+                <div class="sdg-section-cards">
+                    <div class="sdg-section-card">
+                        <div class="sdg-num">12</div>
+                        <h3>Responsible Consumption &amp; Production</h3>
+                        <p>We help users cut down on wasteful habits in food, paper and energy use.</p>
+                    </div>
+                    <div class="sdg-section-card">
+                        <div class="sdg-num">13</div>
+                        <h3>Climate Action</h3>
+                        <p>Tracking your carbon footprint turns you into an active part of the solution to climate change.</p>
+                    </div>
+                    <div class="sdg-section-card">
+                        <div class="sdg-num">15</div>
+                        <h3>Life on Land</h3>
+                        <p>Less waste and less consumption means healthier ecosystems and more biodiversity on land.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-  <script src="footer.js"></script>
+        <section class="team-section">
+            <div class="container">
+                <h2 class="section-title">Meet the team</h2>
+                <p class="subtitle">Grade 9 &mdash; Introduction to Computer Programming</p>
+                <div class="team-grid">
+                    <div class="team-member">
+                        <div class="avatar">&#9889;</div>
+                        <h3>Ethan Nalinakshan</h3>
+                        <p>Front end</p>
+                    </div>
+                    <div class="team-member">
+                        <div class="avatar">&#9997;</div>
+                        <h3>Sabine Lee</h3>
+                        <p>Content writing</p>
+                    </div>
+                    <div class="team-member">
+                        <div class="avatar">&#128736;</div>
+                        <h3>Guillermo Camba Vasquez</h3>
+                        <p>Front &amp; back end</p>
+                    </div>
+                    <div class="team-member">
+                        <div class="avatar">&#128444;</div>
+                        <h3>Yoojoun (Alex) Song</h3>
+                        <p>Images &amp; visuals</p>
+                    </div>
+                    <div class="team-member">
+                        <div class="avatar">&#128221;</div>
+                        <h3>Alex Vasquez</h3>
+                        <p>Writing</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
 
+    <footer class="site-footer" id="site-footer"></footer>
+
+    <script src="js/auth.js"></script>
+    <script src="js/components.js"></script>
 </body>
 </html>
-
-

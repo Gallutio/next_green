@@ -9,8 +9,8 @@
 <body class="auth-page">
     <div class="auth-wrapper">
         <div class="auth-header">
-            <img src="assets/images/robot.png" alt="AI Robot" class="auth-icon">
-            <h1>Next Green AI</h1>
+            <img src="assets/images/logo.png" alt="NextGreen logo" class="auth-icon">
+            <h1>NextGreen</h1>
             <p>Create an account to start tracking</p>
         </div>
         <form class="auth-form" id="signupForm">
@@ -20,11 +20,12 @@
             </div>
             <div class="auth-field">
                 <label for="password">Password</label>
-                <input type="password" id="password" placeholder="At least 6 characters" minlength="6" required>
+                <input type="password" id="password" placeholder="At least 8 characters" minlength="8" required>
+                <p class="auth-hint">Use 8+ characters with upper &amp; lower case letters, a number, and a symbol.</p>
             </div>
             <div class="auth-field">
                 <label for="confirmPassword">Confirm Password</label>
-                <input type="password" id="confirmPassword" placeholder="Repeat your password" minlength="6" required>
+                <input type="password" id="confirmPassword" placeholder="Repeat your password" minlength="8" required>
             </div>
             <div class="auth-error" id="errorMsg"></div>
             <button type="submit" class="auth-btn" id="submitBtn">Sign Up</button>

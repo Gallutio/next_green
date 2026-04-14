@@ -14,15 +14,58 @@ let SUPABASE_KEY = "";
 try {
     const envText = fs.readFileSync(path.join(__dirname, ".env"), "utf-8");
     envText.split("\n").forEach(function (line) {
-        const parts = line.split("=");
-        const key = parts[0].trim();
-        const value = parts.slice(1).join("=").trim();
+        const trimmed = line.trim();
+        if (!trimmed || trimmed.startsWith("#")) return;
+        const eq = trimmed.indexOf("=");
+        if (eq === -1) return;
+        const key = trimmed.slice(0, eq).trim();
+        let value = trimmed.slice(eq + 1).trim();
+        // Strip optional surrounding quotes
+        if ((value.startsWith('"') && value.endsWith('"')) ||
+            (value.startsWith("'") && value.endsWith("'"))) {
+            value = value.slice(1, -1);
+        }
         if (key === "DEEPSEEK_API_KEY") API_KEY = value;
         if (key === "SUPABASE_URL") SUPABASE_URL = value;
         if (key === "SUPABASE_KEY") SUPABASE_KEY = value;
     });
 } catch (err) {
     console.error("Could not read .env file:", err.message);
+}
+
+if (!SUPABASE_URL || !SUPABASE_KEY) {
+    console.warn("Warning: SUPABASE_URL / SUPABASE_KEY missing in .env \u2014 auth will fail.");
+}
+if (!API_KEY) {
+    console.warn("Warning: DEEPSEEK_API_KEY missing in .env \u2014 chat will fail.");
+}
+
+// Map opaque Supabase/GoTrue errors to something a user can act on.
+// Prefers the stable error.code field, falls back to matching the text.
+function friendlyAuthError(error) {
+    const code = error && error.code ? String(error.code).toLowerCase() : "";
+    const message = error && error.message ? String(error.message) : "";
+    const lower = message.toLowerCase();
+
+    if (code === "user_already_exists" || lower.includes("user already registered")) {
+        return "An account with that email already exists. Try logging in.";
+    }
+    if (code === "invalid_credentials" || lower.includes("invalid login credentials")) {
+        return "Wrong email or password.";
+    }
+    if (code === "email_not_confirmed" || lower.includes("email not confirmed")) {
+        return "Check your inbox for a confirmation email before logging in.";
+    }
+    if (code === "weak_password" || lower.includes("password should be at least") || lower.includes("did not match the expected pattern")) {
+        return "Password does not meet the requirements. Use at least 8 characters with upper and lower case letters, a number, and a symbol.";
+    }
+    if (code === "validation_failed" || lower.includes("unable to validate email")) {
+        return "That email address is not valid.";
+    }
+    if (code === "over_email_send_rate_limit") {
+        return "Too many attempts. Wait a minute and try again.";
+    }
+    return message || "Something went wrong. Try again.";
 }
 
 // Supabase client
@@ -61,7 +104,8 @@ app.post("/api/auth/signup", async function (req, res) {
     });
 
     if (error) {
-        return res.status(400).json({ error: error.message });
+        console.error("Signup error from Supabase:", error.code, "-", error.message);
+        return res.status(400).json({ error: friendlyAuthError(error) });
     }
 
     // If email confirmation is required, session will be null
@@ -86,7 +130,8 @@ app.post("/api/auth/login", async function (req, res) {
     const { data, error } = await supabase.auth.signInWithPassword({ email, password });
 
     if (error) {
-        return res.status(400).json({ error: error.message });
+        console.error("Login error from Supabase:", error.code, "-", error.message);
+        return res.status(400).json({ error: friendlyAuthError(error) });
     }
 
     res.json({
@@ -141,7 +186,24 @@ app.post("/api/extract", authenticate, async function (req, res) {
         const extractMessages = [
             {
                 role: "system",
-                content: "You are a data extraction assistant. Given a conversation about someone's daily environmental habits, extract the data into a JSON object. Respond with ONLY a valid JSON object, no other text. Use this exact format:\n{\"waterLiters\":NUMBER_OR_NULL,\"carbonKg\":NUMBER_OR_NULL,\"transport\":\"STRING_OR_NULL\",\"energy\":\"STRING_OR_NULL\",\"waste\":\"STRING_OR_NULL\",\"steps\":[\"step1\",\"step2\",\"step3\"]}\n\nIf a field wasn't discussed, use null. For steps, include improvement suggestions the assistant gave. For carbonKg, estimate based on the info provided."
+                content:
+                    "You extract structured eco-log data from a conversation. Respond with ONLY a valid JSON object, no prose, no code fences.\n\n" +
+                    "Schema:\n" +
+                    "{\n" +
+                    "  \"waterLiters\": NUMBER_OR_NULL,     // total liters used today\n" +
+                    "  \"carbonKg\": NUMBER_OR_NULL,        // total kg CO2 for the day (always estimate if any data present)\n" +
+                    "  \"transport\": STRING_OR_NULL,       // short readable label like \"Walked 3 km\" or \"Car, ~15 km\" or \"Bus + walk\"\n" +
+                    "  \"energy\": STRING_OR_NULL,          // one of: \"Low\", \"Moderate\", \"High\" optionally followed by a short reason. e.g. \"Moderate \\u2014 AC ran 2h\"\n" +
+                    "  \"waste\": STRING_OR_NULL,           // one of: \"Mostly recycled\", \"Mixed\", \"Mostly landfill\"\n" +
+                    "  \"steps\": [\"step1\", \"step2\", \"step3\"]   // 2-3 concrete tips from the assistant's summary\n" +
+                    "}\n\n" +
+                    "RULES:\n" +
+                    "- Do NOT echo raw user replies like \"yes\", \"no\", \"some\". Translate them into the labels above based on context.\n" +
+                    "- If the user said \"yes\" to \"did you leave lights on?\", set energy to \"High\" or \"Moderate\" based on how much.\n" +
+                    "- If the conversation didn't cover a field at all, use null.\n" +
+                    "- carbonKg must be a single number (approximate is fine). Never leave it null if there is any data on transport/energy/waste.\n" +
+                    "- transport must include a rough distance when possible.\n" +
+                    "- steps should be imperative and specific (\"Switch one car trip to the bus\", not \"be greener\")."
             },
             {
                 role: "user",
@@ -177,6 +239,7 @@ app.post("/api/extract", authenticate, async function (req, res) {
         const extracted = JSON.parse(jsonMatch[0]);
         res.json(extracted);
     } catch (error) {
+        console.error("Extract exception:", error);
         res.status(500).json({ error: error.message });
     }
 });
@@ -199,11 +262,13 @@ app.post("/api/logs", authenticate, async function (req, res) {
             .select();
 
         if (error) {
+            console.error("Supabase insert error:", error.code, "-", error.message, error.details || "");
             return res.status(400).json({ error: error.message });
         }
 
         res.json(data[0]);
     } catch (error) {
+        console.error("Save log exception:", error);
         res.status(500).json({ error: error.message });
     }
 });
