@@ -33,6 +33,11 @@ try {
     console.error("Could not read .env file:", err.message);
 }
 
+// Fall back to process.env (used when deployed on Vercel or similar platforms)
+if (!API_KEY) API_KEY = process.env.DEEPSEEK_API_KEY || "";
+if (!SUPABASE_URL) SUPABASE_URL = process.env.SUPABASE_URL || "";
+if (!SUPABASE_KEY) SUPABASE_KEY = process.env.SUPABASE_KEY || "";
+
 if (!SUPABASE_URL || !SUPABASE_KEY) {
     console.warn("Warning: SUPABASE_URL / SUPABASE_KEY missing in .env \u2014 auth will fail.");
 }
