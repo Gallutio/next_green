@@ -30,5 +30,5 @@ Plain HTML/CSS/JS on the front end. Express on the server. Supabase for auth and
 - Guillermo Camba Vazquez — front and back end
 - Ethan Nalinakshan — front end
 - Sabina Lee — content writing
-- Yoojoun (Alex) Song — images and visuals
+- Yeon Joon Son— images and visuals
 - Alex Vasquez — writing
